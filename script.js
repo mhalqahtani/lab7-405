@@ -1,48 +1,116 @@
-const like=document.getElementById("like")
-const disLike=document.getElementById("disLike")
+let asyBtn = document.getElementById('fetchAsync');
+let input = document.getElementsByTagName("input")[0];
+let searchResults = document.getElementById("searchResults");
+let fetchPromiseBtn = document.getElementById('fetchPromise');
+let xhrBtn = document.getElementById('XMLHTTP');
+const apiKey = "YTYYEE7UoFraVgtjAE8BHkmihtLQ09DM";
 
-const initLikes =33
-const initDisLikes =5
 
 
 
-let likeCount =initLikes
-let disLikeCount =initDisLikes
 
-like.innerText="👍 "+likeCount
-disLike.innerText="👎 "+disLikeCount
-function handleLike(){
-    likeCount++
-    like.innerText="👍 "+likeCount
-    disable()
-    setCookie()
+xhrBtn.addEventListener("click", function() {
+
+
+  searchResults.innerHTML = "";
+  let q =input.value
+  getImagesByxhr(q)
+
+});
+
+
+
+
+function getImagesByxhr(q){
+let images = []
+  let xhr = new XMLHttpRequest();
+
+  let url ="https://api.giphy.com/v1/gifs/search?api_key="+apiKey+"&q="+q;
+
+xhr.onreadystatechange = function(){
+
+  if(xhr.readyState === 4 && xhr.status === 200){
+    let texts = xhr.responseText;
+    let objcts = JSON.parse(texts)
+
+processResponse(objcts.data)
+  }
+
+}
+xhr.open("GET",url,true)
+xhr.send();
 }
 
 
 
-function handleDisike(){
-    disLikeCount++
-    disLike.innerText="👎 "+disLikeCount
-    disable()
-    setCookie()
-    
+
+fetchPromiseBtn.addEventListener("click", function() {
+
+    searchResults.innerHTML = "";
+
+let q =input.value
+getImagesByFetch(q)
+
+
+  });
+
+
+function getImagesByFetch(q){
+
+let url ="https://api.giphy.com/v1/gifs/search?api_key="+apiKey+"&q="+q;
+
+
+fetch(url)
+.then((response)=>{
+return response.json();
+
+})
+.then((respObj)=>{
+  processResponse(respObj.data)
+
+})
+.catch((e)=>{
+
+    console.log(e)
+})
+
 }
 
-function disable(){
-    like.disabled=true;
-    disLike.disabled=true;
+
+
+
+
+asyBtn.addEventListener("click", function() {
+
+  searchResults.innerHTML = "";
+  FetchAsyncAwait(input.value)
+    .catch((e) => {
+      console.error(e);
+    });
+});
+
+async function FetchAsyncAwait(keyword) {
+  var url = "https://api.giphy.com/v1/gifs/search";
+
+  var params = "api_key=" + apiKey + "&limit=5&q=" + encodeURIComponent(keyword);
+  if (!keyword) {
+    return;
+  }
+  var requestOptions = {
+    method: 'GET'
+  };
+
+  const response = await fetch(url + "?" + params, requestOptions); 
+  const Obj = await response.json(); 
+  processResponse(Obj.data);
 }
 
-function setCookie(){
-document.cookie = "voted=true; sameSite=Strict; Max-Age=20"
+function processResponse(respObj) {
+  for (item of respObj) {
+    let imgElement = document.createElement("img");
+    imgElement.src = item.images.downsized_medium.url;
+    imgElement.alt = item.title;
+    searchResults.appendChild(imgElement);
+  }
+
 }
-
-
-window.onload = function(){
-
-    if(document.cookie && document.cookie.indexOf("voted")> -1){
-    
-    
-    disable();
-    }
-    }

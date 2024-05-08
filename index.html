@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LAB6</title>
-    <link rel="stylesheet" type="text/css" href="./style.css">
+    <title>LAB7</title>
 </head>
 <body>
- 
-   <h1>LAB6</h1>
-   <button Id="like" onclick="handleLike()">👍 0</button>
+    <header>
+        <input id="input" type="text" placeholder="Search GIFs">
+       
+        <button id="XMLHTTP">Search using XMLHTTP</button>
+        <button id="fetchPromise">Search using fetch promise</button>
 
-   <button id="disLike" onclick="handleDisike()">👎 0</button>
+        <button id="fetchAsync">Search using fetch with async/await</button>
 
-
-
-    <script src="./script.js"> </script>
+  
+      </header>
+      <div id="searchResults"></div>
+      <script src="./script.js"></script>
 </body>
 </html>
